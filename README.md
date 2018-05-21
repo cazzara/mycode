@@ -42,4 +42,4 @@ This project is licensed under MIT- see the [LICENSE.md](LICENSE.md) file for de
 
 ## Acknowledgments
 
-Thanks!
+So long and thanks
