@@ -29,6 +29,8 @@ class Game:
         print("3...")
         sleep(1)
         player.roll()
+        if self.is_cheater(player):
+            player.cheat()
     
     def is_cheater(self, player):
         return isinstance(player, Cheater_Swapper) or isinstance(player, Cheater_Loaded)
