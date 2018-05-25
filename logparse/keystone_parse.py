@@ -8,7 +8,7 @@ import collections
 
 log_file = open('keystone.common.wsgi')
 
-failedLogins = collections.defaultdict(int)
+failedLogins = collections.defaultdict(int) # create a dictionary to store and count the number of failed logins and the associated IP addresses
 successfulLogins = 0
 
 for line in log_file:
