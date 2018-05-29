@@ -1,0 +1,45 @@
+#!/usr/bin/env python3 
+
+import turtle
+import requests
+import json
+import time
+
+iss_loc_endpoint = 'http://api.open-notify.org/iss-now.json'
+
+resp = requests.get(iss_loc_endpoint)
+resp_json = json.loads(resp.text)
+loc = resp_json['iss_position']
+lat = loc['latitude']
+lon = loc['longitude']
+print("Latitude: {} Longitude: {}".format(lat, lon))
+screen = turtle.Screen() # create a screen object
+screen.setup(720, 360) # set the resolution
+screen.setworldcoordinates(-180,-90,180,90)
+screen.bgpic('iss_map.gif')
+screen.register_shape('spriteiss.gif')
+iss = turtle.Turtle()
+iss.shape('spriteiss.gif')
+iss.setheading(90)
+lon = round(float(lon))
+lat = round(float(lat))
+iss.penup()
+iss.goto(lon, lat)
+iss_next_pass_sea = 'http://api.open-notify.org/iss-pass.json?lat=47.6&lon=-122.3'
+resp = requests.get(iss_next_pass_sea)
+resp_json = json.loads(resp.text)
+## My location
+yellowlat = 47.6
+yellowlon = -122.3
+mylocation = turtle.Turtle()
+mylocation.penup()
+mylocation.color('yellow')
+mylocation.goto(round(float(yellowlon)), round(float(yellowlat)))
+mylocation.dot(5)
+mylocation.hideturtle()
+over = resp_json['response'][1]['risetime']
+style = ('Arial', 10, 'bold')
+mylocation.write(time.ctime(over), font=style)
+turtle.mainloop()
+if __name__ == "__main__":
+
