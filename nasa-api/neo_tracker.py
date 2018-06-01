@@ -25,6 +25,10 @@ def getNEOs(url):
     neo_list = []
     nasa_resp = requests.get(url)
     neo_data = json.loads(nasa_resp.text)
+    print("Got response")
+    #f = open("neos.txt", 'w') # Could output returned JSON to a file for offline manipulation
+    #print(neo_data, file=f)
+    #f.close()
     if 'error_message' in neo_data.keys():
         print(neo_data['error_message'])
         sys.exit(-2)
@@ -35,7 +39,7 @@ def getNEOs(url):
     # print(len(neos)) # Default: 8, today plus 7 days from now
     neo_keys = list(neos.keys())
     neo_keys.sort()
-    for key in neo_keys:
+    for key in neo_keys: # The keys for this dictionary are the 'YYYY-MM-DD' dates specified in the query
         print("There will be {:2} NEOs whizzing by on {}".format(len(neos[key]), key))
         ns = neos[key]
         for n in ns:
@@ -51,9 +55,12 @@ def getNEOs(url):
     return neo_list
 
 def displayInfo(l):
-    print("\n**********Detailed Info**********")
+    print("\n\t\t\t\t\t\t\t\t\t\t=========Detailed Info=========\n")
+    print("\t\t\t\t\t*********Miss Distance*********\t\t\t\t\t\t\t*********Relative Velocity*********")
     print("{:^20} {:^20} {:^20} {:^20} {:^20} {:^20} {:^20} {:^20}".format("Name", "Miles", "Kilometers", "Astronomical Units" , "Lunar Distance", "Miles per Hour", "Kilometers per Hour", "Kilometers per Sec"))
-
+    for neo in l:
+        neo.displayLine()
+        
 def setStartDate():
     print("Enter the start date to retrieve NEO information: ")
     print("Date must be in YYYY-MM-DD format")
@@ -70,11 +77,25 @@ def setEndDate():
     end_date = "&end_date={}"
     return end_date.format(end)
 
+def getClosestNEO(l):
+    i = 0
+    closestNEO = l[i]
+    for i in range(1, len(l)):
+        n = l[i]
+        if float(n.approach_data['miss_distance']['miles']) < float(closestNEO.approach_data['miss_distance']['miles']):
+            
+            closestNEO = n
+    return closestNEO
+
 if __name__ == "__main__":
-    #NEO_URL += setStartDate()
-    #NEO_URL += setEndDate()
-    #NEO_URL += api.format(API_KEY)
-    NEO_URL = "https://api.nasa.gov/neo/rest/v1/feed?start_date=2018-05-31&end_date=2018-05-31&api_key=L0BfzsAt1hTJVtm3O3j3Ekil8i98zwG33b9nnfpI"
+    NEO_URL += setStartDate()
+    NEO_URL += setEndDate()
+    NEO_URL += api.format(API_KEY)
+    # NEO_URL = "https://api.nasa.gov/neo/rest/v1/feed?start_date=2018-05-31&end_date=2018-05-31&api_key=L0BfzsAt1hTJVtm3O3j3Ekil8i98zwG33b9nnfpI"
     list_of_neos = getNEOs(NEO_URL)
     displayInfo(list_of_neos)
+    
+    close_rock= getClosestNEO(list_of_neos)
+    print("\n\n\nClosest Rock Incoming: - {}\n".format(close_rock.approach_data['close_approach_date']))
+    close_rock.displayLine()
     

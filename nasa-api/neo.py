@@ -18,8 +18,18 @@ class Neo:
         self.url = url
         self.magnitude = magnitude
 
-    def displayLine():
-        print("{:^20}\t{:<20,.4f}\t{:<20,.4f}\t{:<20.4f}\t{:<20.4f}\t{:^20,.4f}\t{:<20,.4f}\t{:<20.4f}".format(self.name, float(miles), float(kms), float(aus), float(lunar),float(mph), float(kph), float(kps)))
+    def displayLine(self):
+        miles = self.approach_data['miss_distance']['miles']
+        kms = self.approach_data['miss_distance']['kilometers']
+        aus = self.approach_data['miss_distance']['astronomical']
+        lunar = self.approach_data['miss_distance']['lunar']
+        mph = self.approach_data['relative_velocity']['miles_per_hour']
+        kph = self.approach_data['relative_velocity']['kilometers_per_hour']
+        kps = self.approach_data['relative_velocity']['kilometers_per_second']
+        print("{:^20}\t{:<20,.4f}\t{:<20,.4f}\t{:<20.4f}{:<20.4f}{:<20,.4f}{:<20,.4f}{:<20.4f}".format(self.name,   float(miles),\
+                                                                                                       float(kms),  float(aus), \
+                                                                                                       float(lunar),float(mph), \
+                                                                                                       float(kph),  float(kps)))
 
     def displayApproachInfo(self):
         print("Passing by {1} on {0}".format(self.approach_data['close_approach_date'], self.approach_data['orbiting_body']))
