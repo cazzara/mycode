@@ -45,7 +45,7 @@ def getNEOs(url):
         print("There will be {:2} NEOs whizzing by on {}".format(len(neos[key]), key))
         ns = neos[key]
         for n in ns:
-            neo_list.append(\     # Instantiate a NEO Object and append to the list
+            neo_list.append(    # Instantiate a NEO Object and append to the list     
                 Neo(n['name'],\
                     n['neo_reference_id'],\
                     n['close_approach_data'][0],\
@@ -60,36 +60,43 @@ def displayInfo(l, metric):
     if metric:
         print("\n\t\t\t\t\t\t=========Detailed Info=========\n")
         print("\t\t\t\t\t******Miss Distance****** *******Relative Velocity****** ******Estimated Size******")   # Display Metric Headers
-        print("{:^20} {:^10} {:^20} {:^20} {:^20} {:^20} {:^20}".format("Name", "Date", \
+        print("{:-^20}{:-^10}{:-^20}{:-^20}{:-^25}{:-^25}{:-^25}".format("Name", "Date", \
                                                                         "Kilometers", "Astronomical Units" , \
                                                                         "Kilometers per Hour", "Max Diameter (Meters)", \
                                                                         "Max Diameter (Kilometers)"))
         for neo in l:
             neo.displayLineMetric()
             
-        close_rock= getClosestNEO(l, metric)
-        print("\n\n\n\t\t\t\t\t\tClosest Rock Incoming: - {}\n".format(close_rock.approach_data['close_approach_date']))
-        print("{:^20} {:^10} {:^20} {:^20} {:^20} {:^20} {:^20}".format("Name", "Date", \
+        close_rock, large_rock, fast_rock = getCloserLargerFaster(l, metric)
+        print("\n\n\n\t\t\t\t\t\tClosest Rock Incoming:\n")
+        print("{:-^20}{:-^10}{:-^20}{:-^20}{:-^25}{:-^25}{:-^25}".format("Name", "Date", \
                                                                         "Kilometers", "Astronomical Units" , \
                                                                         "Kilometers per Hour", "Max Diameter (Meters)", \
                                                                         "Max Diameter (Kilometers)"))
         close_rock.displayLineMetric()
-        
+        print("\n\n\n\t\t\t\t\t\tLargest Rock Incoming:\n")
+        large_rock.displayLineMetric()
+        print("\n\n\n\t\t\t\t\t\tFastest Rock Incoming:\n")
+        fast_rock.displayLineMetric()
     else:
         print("\n\t\t\t\t\t\t=========Detailed Info=========\n")
         print("\t\t\t\t\t******Miss Distance****** *******Relative Velocity****** ******Estimated Size******")   # Display Imperial Headers
-        print("{:^20} {:^10} {:^20} {:^20} {:^20} {:^20} {:^20}".format("Name", "Date", "Miles",\
+        print("{:^20}{:^10}{:^20}{:^20}{:^20}{:^25}{:^25}".format("Name", "Date", "Miles",\
                                                                         "Astronomical Units" , "Miles per Hour", \
                                                                         "Max Diameter (Feet)", "Max Diameter (Miles)"))
         for neo in l:
             neo.displayLineImperial()
             
-        close_rock= getClosestNEO(l, metric)
-        print("\n\n\n\t\t\t\t\t\tClosest Rock Incoming: - {}\n".format(close_rock.approach_data['close_approach_date']))
-        print("{:^20} {:^10} {:^20} {:^20} {:^20} {:^20} {:^20}".format("Name", "Date", "Miles",\
+        close_rock, large_rock, fast_rock = getCloserLargerFaster(l, metric)
+        print("\n\n\n\t\t\t\t\t\tClosest Rock Incoming:\n")
+        print("{:^20}{:^10}{:^20}{:^20}{:^25}{:^25}{:^25}".format("Name", "Date", "Miles",\
                                                                         "Astronomical Units" , "Miles per Hour", \
                                                                         "Max Diameter (Feet)", "Max Diameter (Miles)"))
         close_rock.displayLineImperial()
+        print("\n\n\n\t\t\t\t\t\tLargest Rock Incoming:\n")
+        large_rock.displayLineImperial()
+        print("\n\n\n\t\t\t\t\t\tFastest Rock Incoming:\n")
+        fast_rock.displayLineImperial()
         
 def setStartDate():
     print("Enter the start date to retrieve NEO information: ")
@@ -107,19 +114,31 @@ def setEndDate():
     end_date = "&end_date={}"
     return end_date.format(end)
 
-def getClosestNEO(l, metric):
+def getCloserLargerFaster(l, metric):
     i = 0
     closestNEO = l[i]
+    largestNEO = l[i]
+    fastestNEO = l[i]
     for i in range(1, len(l)):
         n = l[i]
         if metric:
             if float(n.approach_data['miss_distance']['kilometers']) < float(closestNEO.approach_data['miss_distance']['kilometers']):
                 closestNEO = n
+            if float(n.estimated_size['kilometers']['estimated_diameter_max']) > float(largestNEO.estimated_size['kilometers']['estimated_diameter_max']):
+                largestNEO = n
+            if float(n.approach_data['relative_velocity']['kilometers_per_hour']) > float(fastestNEO.approach_data['relative_velocity']['kilometers_per_hour']):
+                fastestNEO = n
         else:
             if float(n.approach_data['miss_distance']['miles']) < float(closestNEO.approach_data['miss_distance']['miles']):
                 closestNEO = n
+            if float(n.estimated_size['miles']['estimated_diameter_max']) > float(largestNEO.estimated_size['miles']['estimated_diameter_max']):
+                largestNEO = n
+            if float(n.approach_data['relative_velocity']['miles_per_hour']) > float(fastestNEO.approach_data['relative_velocity']['miles_per_hour']):
+                fastestNEO = n
             
-    return closestNEO
+    return closestNEO, largestNEO, fastestNEO
+
+
 
 def promptForUnits():
     metric = input("Would you like to display the results in \n(1) Metric \nor \n(2) Imperial\n")

@@ -25,7 +25,7 @@ class Neo:
         kph = self.approach_data['relative_velocity']['kilometers_per_hour']
         dia_meters = self.estimated_size['meters']['estimated_diameter_max']
         dia_kilometers = self.estimated_size['kilometers']['estimated_diameter_max']
-        print("{:<20}\t{:<10}\t{:<20,.4f}\t{:<20.4f}{:<20.4f}{:<20,.4f}{:<20,.4f}".format(self.name, date,  float(kms),\
+        print("{:<20}{:<10}\t{:<20,.4f}\t{:<20.4f}{:<25,.4f}{:<25,.4f}{:<25,.4f}".format(self.name, date,  float(kms),\
                                                                                                        float(aus),  float(kph), \
                                                                                                        float(dia_meters),float(dia_kilometers)))
     def displayLineImperial(self):
@@ -35,7 +35,7 @@ class Neo:
         mph = self.approach_data['relative_velocity']['miles_per_hour']
         dia_feet = self.estimated_size['feet']['estimated_diameter_max']
         dia_miles = self.estimated_size['miles']['estimated_diameter_max']
-        print("{:<20}\t{:<10}\t{:<20,.4f}\t{:<20.4f}{:<20.4f}{:<20,.4f}{:<20,.4f}".format(self.name, date, float(miles), float(aus),\
+        print("{:<20}{:<10}\t{:<20,.4f}\t{:<20.4f}{:<25,.4f}{:<25,.4f}{:<25,.4f}".format(self.name, date, float(miles), float(aus),\
                                                                                                        float(mph), float(dia_feet), float(dia_miles)))
 
 
